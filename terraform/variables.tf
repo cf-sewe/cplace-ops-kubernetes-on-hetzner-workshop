@@ -17,6 +17,18 @@ variable "hcloud_datacenter_backup" {
   description = "Hetzner Cloud backup location."
 }
 
+# Company IP addresses (including VPN endpoint)
+# see https://base.cplace.io/pages/1imokqmrbh1to1p3tk2htfead8/WAN
+variable "company_ips" {
+  type        = set(string)
+  description = "Company IPs for restriction of management access"
+  default = [
+    "80.81.14.141/32",   # Alte Hopfenpost (M5)
+    "62.245.186.106/32", # Neue Hopfenpost
+    "212.114.227.134/32" # Alte Hopfenpost
+  ]
+}
+
 variable "bootstrap_public_keys" {
   description = "Public SSH keys of administrators added to the root authorized_keys. Login is only possible before hardening took place."
   type = map(object({
