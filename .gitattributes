@@ -1,0 +1,4 @@
+* text=auto
+*.tf eol=lf
+*.sh eol=lf
+*.bat eol=crlf
