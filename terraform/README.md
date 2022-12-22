@@ -5,20 +5,39 @@ Terraform is used to automate and manage the deployment of the Kubernetes infras
 Note: The production Kubernetes cluster will likely be based on dedicated servers.
 It may or may not be required to use Terraform in that scenario.
 
-## Coverage
+## Components
+
+The following sections list the components covered by Terraform.
 
 ### Jump Server
 
-This is the only server (despite Terraform Cloud)
+The jump server is used as a bastion host.
+It is the only external component permitted for communicating with the Kubernetes cluster.
 
-- kubectl
-- talosctl
-- packer
+The following tools are installed on the jump server:
 
-### Talos Boot Image
+- `kubectl` for managing the K8S cluster
+- `talosctl` for managing the Talos OS
+- `packer` for creating the Talos boot image
 
-### Servers
+### Kubernetes Nodes
 
-### Internal Network
+Terraform is used to deploy the Kubernetes Nodes that are running in the hcloud.
+
+Note: Dedicated servers are not managed by Terraform.
 
 ### Load Balancer
+
+The hcloud load balancer will be used for the K8S API (controlplane).
+It will also be used for exposing the applications running within K8S.
+
+## Updating Terraform Modules
+
+The Terraform module versions are defined in `.terraform.lock.hcl` which is checked into the GIT repository.
+To update the module versions, please use the following command:
+
+```bash
+terraform init -upgrade
+```
+
+Afterward, check the changed files back into the GIT repository.
