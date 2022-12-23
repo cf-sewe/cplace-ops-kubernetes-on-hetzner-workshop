@@ -1,4 +1,6 @@
 machine:
+  certSANs:
+    - ${loadbalancer_ipv4}
   install:
     diskSelector:
       size: "<= 10GB"

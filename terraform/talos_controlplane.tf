@@ -17,9 +17,10 @@ resource "talos_machine_configuration_apply" "controlplane" {
   endpoint              = each.value.ipv6_address
   node                  = each.value.ipv6_address
   config_patches = [
-    templatefile("${path.module}/talos/patch.yml.tpl", {
-      hostname  = each.value.name
-      dnsdomain = format("%s.local", var.talos_cluster_name)
+    templatefile("${path.module}/talos/controleplane.patch.yml.tpl", {
+      hostname          = each.value.name
+      dnsdomain         = format("%s.local", var.talos_cluster_name)
+      loadbalancer_ipv4 = hcloud_load_balancer.controlplane.ipv4
     })
   ]
 }
