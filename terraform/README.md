@@ -41,3 +41,9 @@ terraform init -upgrade
 ```
 
 Afterward, check the changed files back into the GIT repository.
+
+## Findings
+
+- The hcloud load balancer can only communicate to the backend servers
+  if the servers have a public IPv4
+  or they are in the same private network.

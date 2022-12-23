@@ -62,6 +62,6 @@ resource "hcloud_server" "jump" {
   firewall_ids      = [hcloud_firewall.jump-server.id]
   public_net {
     ipv4_enabled = true
-    ipv6_enabled = true
+    ipv6_enabled = false
   }
 }

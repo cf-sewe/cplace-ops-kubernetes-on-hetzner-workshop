@@ -2,13 +2,16 @@ machine:
   certSANs:
     - ${loadbalancer_ipv4}
   install:
-    diskSelector:
-      size: "<= 10GB"
+    disk: /dev/sda
   network:
     hostname: ${hostname}
     interfaces:
       - interface: eth0
         mtu: 9000
+    nameservers:
+      - 2a01:4ff:ff00::add:1
+      - 2a01:4ff:ff00::add:2
+      - 2606:4700:4700::64
   # sysctls:
   #     net.ipv4.ip_forward: "0"
   # encrypt the EPHEMERAL and STATE partitions with a random key
