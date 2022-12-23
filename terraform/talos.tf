@@ -11,10 +11,12 @@ resource "talos_machine_bootstrap" "cluster" {
   talos_config = talos_client_configuration.cluster.talos_config
   endpoint     = [for s in hcloud_server.controlplane : s.ipv6_address][0]
   node         = [for s in hcloud_server.controlplane : s.ipv6_address][0]
+  depends_on   = [talos_machine_configuration_apply.controlplane]
 }
 
 resource "talos_cluster_kubeconfig" "cluster" {
   talos_config = talos_client_configuration.cluster.talos_config
   endpoint     = [for s in hcloud_server.controlplane : s.ipv6_address][0]
   node         = [for s in hcloud_server.controlplane : s.ipv6_address][0]
+  depends_on   = [talos_machine_configuration_apply.controlplane]
 }
