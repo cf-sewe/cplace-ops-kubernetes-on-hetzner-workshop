@@ -28,7 +28,7 @@ Note: Dedicated servers are not managed by Terraform.
 
 ### Load Balancer
 
-The hcloud load balancer will be used for the K8S API (controlplane).
+The hcloud load balancer will be used for the K8S API (control-plane).
 It will also be used for exposing the applications running within K8S.
 
 ## Updating Terraform Modules

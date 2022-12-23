@@ -51,3 +51,58 @@ variable "talos_version" {
   default     = "1.2.8"
   description = "Talos OS version to use for Packer"
 }
+
+variable "talos_cluster_name" {
+  default     = "training"
+  description = "Talos Cluster Name"
+}
+
+variable "k8s_node_placement_group_count" {
+  default     = 1
+  description = "Defines the number of placement groups to create for k8s nodes."
+}
+
+variable "k8s_nodes" {
+  description = "hcloud servers used for k8s control and worker nodes"
+  type = map(object({
+    name        = string
+    ip          = string
+    location    = optional(string, "fsn1")
+    server_type = optional(string, "cpx31")
+    node_type   = optional(string, "worker")
+    pgroup      = optional(number, 0)
+  }))
+  default = {
+    "1" = {
+      name        = "control-1"
+      location    = "fsn1"
+      server_type = "cpx21"
+      node_type   = "controlplane"
+      pgroup      = 0
+    }
+    "2" = {
+      name        = "control-2"
+      location    = "fsn1"
+      server_type = "cpx21"
+      node_type   = "controlplane"
+      pgroup      = 0
+    }
+    "3" = {
+      name        = "control-3"
+      location    = "fsn1"
+      server_type = "cpx21"
+      node_type   = "controlplane"
+      pgroup      = 0
+    }
+    "4" = {
+      name     = "worker-1"
+      location = "fsn1"
+      pgroup   = 1
+    }
+    "5" = {
+      name     = "worker-2"
+      location = "fsn1"
+      pgroup   = 1
+    }
+  }
+}

@@ -7,6 +7,7 @@ curl -sLo /usr/local/bin/kubectl "https://dl.k8s.io/release/${v}/bin/linux/amd64
 chmod 755 /usr/local/bin/kubectl
 echo 'source <(kubectl completion bash)' >>~/.bashrc
 
+echo ">>> Installing talosctl"
 v=$(curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | jq -r '.tag_name')
 curl -sLo /usr/local/bin/talosctl https://github.com/siderolabs/talos/releases/download/${v}/talosctl-linux-amd64
 chmod 755 /usr/local/bin/talosctl
