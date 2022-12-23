@@ -14,11 +14,11 @@ resource "talos_machine_configuration_apply" "controlplane" {
   for_each              = hcloud_server.controlplane
   talos_config          = talos_client_configuration.cluster.talos_config
   machine_configuration = talos_machine_configuration_controlplane.controlplane.machine_config
-  endpoint              = each.ipv6_address
-  node                  = each.ipv6_address
+  endpoint              = each.value.ipv6_address
+  node                  = each.value.ipv6_address
   config_patches = [
     templatefile("${path.module}/talos/patch.yml.tpl", {
-      hostname  = each.name
+      hostname  = each.value.name
       dnsdomain = format("%s.local", var.talos_cluster_name)
     })
   ]
