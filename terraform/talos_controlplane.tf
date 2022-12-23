@@ -4,7 +4,7 @@
 resource "talos_machine_configuration_controlplane" "controlplane" {
   cluster_name = var.talos_cluster_name
   # TODO should be DNS entry with ipv4/ipv6
-  cluster_endpoint = format("https://%s:6443", hcloud_load_balancer.controlplane.ipv6)
+  cluster_endpoint = format("https://[%s]:6443", hcloud_load_balancer.controlplane.ipv6)
   machine_secrets  = talos_machine_secrets.cluster.machine_secrets
   docs_enabled     = false
   examples_enabled = false
