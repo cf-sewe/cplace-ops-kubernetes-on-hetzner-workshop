@@ -2,7 +2,7 @@
 # Talos Controlplane Nodes
 
 resource "hcloud_server" "controlplane" {
-  for_each           = filter(var.k8s_nodes, each.value.type == "controlplane")
+  for_each           = [for k, v in var.k8s_nodes : v if v.type == "controlplane"]
   name               = each.value.name
   backups            = false
   delete_protection  = false
@@ -21,8 +21,7 @@ resource "hcloud_server" "controlplane" {
 
 # All traffic toward internet is permitted.
 resource "hcloud_firewall" "controlplane" {
-  name     = "controlplane"
-  apply-to = "label-selector"
+  name = "controlplane"
   rule {
     description = "Allow inbound ICMP"
     direction   = "in"

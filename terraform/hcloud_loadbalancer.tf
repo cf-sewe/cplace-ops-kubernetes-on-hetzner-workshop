@@ -5,7 +5,6 @@ resource "hcloud_load_balancer" "controlplane" {
   name               = "controlplane"
   load_balancer_type = "lb11"
   location           = "fsn1"
-  algorithm          = "round_robin"
 }
 
 resource "hcloud_load_balancer_service" "controlplane" {
@@ -17,6 +16,6 @@ resource "hcloud_load_balancer_service" "controlplane" {
 
 resource "hcloud_load_balancer_target" "controlplane" {
   load_balancer_id = hcloud_load_balancer.controlplane.id
-  type             = "label-selector"
+  type             = "label_selector"
   label_selector   = "type=controlplane"
 }
