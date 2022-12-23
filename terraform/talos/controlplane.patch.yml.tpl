@@ -9,23 +9,30 @@ machine:
       - interface: eth0
         mtu: 9000
     nameservers:
-      - 2a01:4ff:ff00::add:1
-      - 2a01:4ff:ff00::add:2
+      - 1.1.1.1
+
       - 2606:4700:4700::64
   # sysctls:
   #     net.ipv4.ip_forward: "0"
   # encrypt the EPHEMERAL and STATE partitions with a random key
-  systemDiskEncryption:
-    ephemeral:
-      provider: luks2
-      keys:
-        - nodeID: {}
-          slot: 0
-    state:
-      provider: luks2
-      keys:
-        - nodeID: {}
-          slot: 0
+  # systemDiskEncryption:
+  #   ephemeral:
+  #     provider: luks2
+  #     keys:
+  #       - nodeID: {}
+  #         slot: 0
+  #   state:
+  #     provider: luks2
+  #     keys:
+  #       - nodeID: {}
+  #         slot: 0
+  time:
+    servers:
+      - ntp1.hetzner.de
+      - ntp2.hetzner.com
+      - ntp3.hetzner.net
+      - 0.de.pool.ntp.org
+      - 1.de.pool.ntp.org
     # forward logs to promtail
     # logging:
     #   destinations:
