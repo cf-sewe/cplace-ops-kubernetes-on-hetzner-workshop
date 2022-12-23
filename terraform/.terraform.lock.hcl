@@ -58,3 +58,26 @@ provider "registry.terraform.io/hetznercloud/hcloud" {
     "zh:e81c3ea971e32a6ca3fdb0cd9e644614308ab2cf2a19482dd8a109d67fe3fb6f",
   ]
 }
+
+provider "registry.terraform.io/siderolabs/talos" {
+  version     = "0.1.0-beta.0"
+  constraints = "0.1.0-beta.0"
+  hashes = [
+    "h1:SPvuYbum09/3TQeio49h0BcuT4GykjgctUEtlMK1EoI=",
+    "zh:0f8f657436c50cf44d110d2061abb95c1d67f562c12cbb6b7d4928bec37c92a4",
+    "zh:0fa82a384b25a58b65523e0ea4768fa1212b1f5cfc0c9379d31162454fedcc9d",
+    "zh:18d96c2d4f4d93f8c538010e8b3f9276085206c539dd9280886efea4ecc42522",
+    "zh:1db3018af90843ac7e6a3f5069beadefdbbbde15aaed73a170632d313c39fcf7",
+    "zh:8aa2910d04578c21d8937ff786345350cab09a5469ba8fe811d5d870c438503d",
+    "zh:8c681c48160120828e4b8c3f99ae1847a943eed0847018a510bd991b8003df80",
+    "zh:8eea6ceff673961ef791186759469c418ec898ad76167874cb7a8413d64cc2e4",
+    "zh:98fe2fce6f2eaeabab037778c0a3cab675b4a8c770def1fbd025c9a571a93252",
+    "zh:aafa1a6392d5b5e455cbb3e6dc8673105c444e19b5d71d88f3af14f565599ad5",
+    "zh:af4033baee9cd2acb6018a59a2579048db108f6ab7d88889757ea328e53f8183",
+    "zh:ba363ce6411ccd80ff1bb0a413da4c2e759d16c347344c9c248a031324e0d9ad",
+    "zh:c896799e09602e4c9d1276f5ecff6b30f885ea6a9ba0ddadd53de94a49e94ddd",
+    "zh:dde8e59f7d20c8caa949bc082048d9dc40dd6a4c280e909e74aafa6791e331fa",
+    "zh:dfb1ccd341465997760c5309b84cf3aa8456e7145e2da1f1c06f88f8b242cbe1",
+    "zh:e97d5a5f8eb4726137149610868b7243a9efab9036ebd31db0c6f8a7e4741307",
+  ]
+}
