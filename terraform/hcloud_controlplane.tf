@@ -2,7 +2,7 @@
 # Talos Controlplane Nodes
 
 resource "hcloud_server" "controlplane" {
-  for_each           = toset([for each in var.k8s_nodes : each if each.node_type == "controlplane"])
+  for_each           = tomap([for each in var.k8s_nodes : each if each.node_type == "controlplane"])
   name               = each.value.name
   backups            = false
   delete_protection  = false
