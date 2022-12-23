@@ -41,7 +41,7 @@ resource "hcloud_firewall" "controlplane" {
     protocol    = "tcp"
     port        = "443"
     source_ips = concat(
-      hcloud_server.jump.ipv6_network,
+      [hcloud_server.jump.ipv6_network],
       [for s in hcloud_server.controlplane : s.ipv6_network]
     )
   }
@@ -51,7 +51,7 @@ resource "hcloud_firewall" "controlplane" {
     protocol    = "tcp"
     port        = "6443"
     source_ips = concat(
-      hcloud_server.jump.ipv6_network,
+      [hcloud_server.jump.ipv6_network],
       [for s in hcloud_server.controlplane : s.ipv6_network]
     )
   }
@@ -61,7 +61,7 @@ resource "hcloud_firewall" "controlplane" {
     protocol    = "tcp"
     port        = "50000-50001"
     source_ips = concat(
-      hcloud_server.jump.ipv6_network,
+      [hcloud_server.jump.ipv6_network],
       [for s in hcloud_server.controlplane : s.ipv6_network]
     )
   }
