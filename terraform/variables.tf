@@ -66,7 +66,6 @@ variable "k8s_nodes" {
   description = "hcloud servers used for k8s control and worker nodes"
   type = map(object({
     name        = string
-    ip          = string
     location    = optional(string, "fsn1")
     server_type = optional(string, "cpx31")
     node_type   = optional(string, "worker")
