@@ -90,7 +90,9 @@ resource "hcloud_firewall" "controlplane" {
   }
 }
 
+# Note: if the firewall is configured too early, the config cannot be applied
 resource "hcloud_firewall_attachment" "controlplane" {
   firewall_id     = hcloud_firewall.controlplane.id
   label_selectors = ["type=controlplane"]
+  depends_on      = [talos_machine_configuration_apply.controlplane]
 }
