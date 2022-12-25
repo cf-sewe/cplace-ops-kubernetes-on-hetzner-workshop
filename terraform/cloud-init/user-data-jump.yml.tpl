@@ -10,12 +10,22 @@ users:
     shell: "/bin/bash"
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
 write_files:
-  - encoding: base64
-    defer: true
+  - path: "/home/ansible/.ssh/id_rsa"
+    encoding: base64
     content: "${ansible_private_key}"
     owner: "ansible:ansible"
-    path: "/home/ansible/.ssh/id_rsa"
     permissions: "0400"
+    defer: true
+  - path: "/home/ansible/.talos/config"
+    content: "${talosconfig}"
+    owner: "ansible:ansible"
+    permissions: "0400"
+    defer: true
+  - path: "/home/ansible/.kube/config"
+    content: "${kubeconfig}"
+    owner: "ansible:ansible"
+    permissions: "0400"
+    defer: true
 packages:
   - ansible-core
   - bzip2
@@ -28,5 +38,5 @@ packages:
   - zip
 package_upgrade: true
 package_reboot_if_required: true
-runcmd:
-  - [chown, -R, "ansible:ansible", "/home/ansible"]
+#runcmd:
+#  - [chown, -R, "ansible:ansible", "/home/ansible"]

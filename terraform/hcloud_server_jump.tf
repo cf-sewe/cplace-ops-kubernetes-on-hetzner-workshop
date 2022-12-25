@@ -10,6 +10,8 @@ data "template_file" "user-data-jump" {
   vars = {
     ansible_public_key  = tls_private_key.ansible_ssh.public_key_openssh
     ansible_private_key = base64encode(tls_private_key.ansible_ssh.private_key_pem)
+    talosconfig         = talos_client_configuration.cluster.talos_config
+    kubeconfig          = talos_cluster_kubeconfig.cluster.kube_config
     talos_version       = var.talos_version
   }
 }
