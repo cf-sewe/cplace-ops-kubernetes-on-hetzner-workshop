@@ -7,9 +7,9 @@ machine:
       - interface: eth0
         dhcp: true
         mtu: 9000
-    nameservers:
-      - 1.1.1.1
-      - 1.0.0.1
+    # nameservers:
+    #   - 1.1.1.1
+    #   - 1.0.0.1
   # encrypt the EPHEMERAL and STATE partitions with a random key
   systemDiskEncryption:
     ephemeral:
