@@ -46,23 +46,17 @@ resource "hcloud_firewall" "controlplane" {
     ))
   }
   rule {
-    description = "Allow inbound private Kubernetes API traffic"
+    description = "Allow inbound Kubernetes API traffic from LB"
     direction   = "in"
     protocol    = "tcp"
     port        = "6443"
-    source_ips = sort(concat(
-      [
-        format("%s/32", hcloud_server.jump.ipv4_address),
-        format("%s/32", hcloud_load_balancer.controlplane.ipv4),
-      ],
-      [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)]
-    ))
+    source_ips  = [format("%s/32", hcloud_load_balancer.controlplane.ipv4)]
   }
   rule {
-    description = "Allow inbound private Talos traffic"
+    description = "Allow inbound cluster internal TCP traffic"
     direction   = "in"
     protocol    = "tcp"
-    port        = "50000-50001"
+    port        = "any"
     source_ips = sort(concat(
       [format("%s/32", hcloud_server.jump.ipv4_address)],
       [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)],
@@ -70,18 +64,14 @@ resource "hcloud_firewall" "controlplane" {
     ))
   }
   rule {
-    description = "Allow inbound private Kubernetes traffic (etcd server client API)"
+    description = "Allow inbound cluster internal UDP traffic"
     direction   = "in"
-    protocol    = "tcp"
-    port        = "2379-2380"
-    source_ips  = sort([for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)])
-  }
-  rule {
-    description = "Allow inbound private Kubernetes traffic (Kubelet API)"
-    direction   = "in"
-    protocol    = "tcp"
-    port        = "10250"
-    source_ips  = sort([for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)])
+    protocol    = "udp"
+    port        = "any"
+    source_ips = sort(concat(
+      [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)],
+      [for s in hcloud_server.worker : format("%s/32", s.ipv4_address)]
+    ))
   }
   apply_to {
     label_selector = "type=controlplane"
