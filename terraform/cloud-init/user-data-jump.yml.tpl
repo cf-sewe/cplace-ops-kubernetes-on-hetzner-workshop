@@ -13,13 +13,13 @@ write_files:
   - path: "/home/ansible/.ssh/id_rsa"
     encoding: base64
     content: "${ansible_private_key}"
-    owner: "ansible:ansible"
+    #owner: "ansible:ansible"
     permissions: "0400"
     defer: false
   - path: "/home/ansible/.talos/config"
     encoding: base64
     content: "${talosconfig}"
-    owner: "ansible:ansible"
+    #owner: "ansible:ansible"
     permissions: "0400"
     defer: false
 packages:
@@ -34,3 +34,5 @@ packages:
   - zip
 package_upgrade: true
 package_reboot_if_required: true
+runcmd:
+  - [chown, -R, "ansible:ansible", "/home/ansible"]
