@@ -4,12 +4,12 @@ output "jump_server_ipv4" {
 }
 
 output "controlplane_ipv4" {
-  value       = hcloud_server.controlplane.*.ipv4_address
+  value       = [for s in hcloud_server.controlplane : s.ipv4_address]
   description = "IPv4 addresses of the controlplane nodes"
 }
 
 output "worker_ipv4" {
-  value       = hcloud_server.worker.*.ipv4_address
+  value       = [for s in hcloud_server.worker : s.ipv4_address]
   description = "IPv4 addresses of the worker nodes"
 }
 
