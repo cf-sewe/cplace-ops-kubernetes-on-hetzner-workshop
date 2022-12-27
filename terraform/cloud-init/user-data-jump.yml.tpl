@@ -17,12 +17,8 @@ write_files:
     permissions: "0400"
     defer: true
   - path: "/home/ansible/.talos/config"
+    encoding: base64
     content: "${talosconfig}"
-    owner: "ansible:ansible"
-    permissions: "0400"
-    defer: true
-  - path: "/home/ansible/.kube/config"
-    content: "${kubeconfig}"
     owner: "ansible:ansible"
     permissions: "0400"
     defer: true
@@ -38,5 +34,3 @@ packages:
   - zip
 package_upgrade: true
 package_reboot_if_required: true
-#runcmd:
-#  - [chown, -R, "ansible:ansible", "/home/ansible"]

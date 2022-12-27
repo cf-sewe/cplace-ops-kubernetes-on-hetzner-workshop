@@ -2,20 +2,20 @@ resource "talos_machine_secrets" "cluster" {}
 
 resource "talos_client_configuration" "cluster" {
   cluster_name    = var.talos_cluster_name
-  endpoints       = [hcloud_load_balancer.controlplane.ipv4]
+  endpoints       = [for s in hcloud_server.controlplane : s.ipv4_address]
   machine_secrets = talos_machine_secrets.cluster.machine_secrets
 }
 
-resource "talos_machine_bootstrap" "cluster" {
-  talos_config = talos_client_configuration.cluster.talos_config
-  endpoint     = [for s in hcloud_server.controlplane : s.ipv4_address][0]
-  node         = [for s in hcloud_server.controlplane : s.ipv4_address][0]
-  depends_on   = [talos_machine_configuration_apply.controlplane]
-}
-
-resource "talos_cluster_kubeconfig" "cluster" {
-  talos_config = talos_client_configuration.cluster.talos_config
-  endpoint     = hcloud_load_balancer.controlplane.ipv4
-  node         = hcloud_load_balancer.controlplane.ipv4
-  depends_on   = [talos_machine_bootstrap.cluster]
+resource "talos_machine_configuration_controlplane" "controlplane" {
+  cluster_name = var.talos_cluster_name
+  # TODO should be DNS entry with ipv4/ipv6
+  cluster_endpoint = format("https://%s:6443", hcloud_load_balancer.controlplane.ipv4)
+  machine_secrets  = talos_machine_secrets.cluster.machine_secrets
+  docs_enabled     = false
+  examples_enabled = false
+  config_patches = [
+    templatefile("${path.module}/talos/controlplane.patch.yml.tpl", {
+      dnsdomain = format("%s.local", var.talos_cluster_name)
+    })
+  ]
 }

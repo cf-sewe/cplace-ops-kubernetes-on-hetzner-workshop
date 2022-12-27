@@ -13,7 +13,8 @@ output "talosconfig" {
   sensitive = true
 }
 
-output "kubeconfig" {
-  value     = talos_cluster_kubeconfig.cluster.kube_config
+output "talos_controlplane_config" {
+  value     = talos_machine_configuration_controlplane.controlplane.machine_config
   sensitive = true
 }
+

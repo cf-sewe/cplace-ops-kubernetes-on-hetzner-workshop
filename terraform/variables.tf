@@ -47,11 +47,6 @@ variable "bootstrap_public_keys" {
   }
 }
 
-variable "talos_version" {
-  default     = "1.2.8"
-  description = "Talos OS version to use for Packer"
-}
-
 variable "talos_cluster_name" {
   default     = "training"
   description = "Talos Cluster Name"

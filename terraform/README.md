@@ -28,7 +28,7 @@ Note: Dedicated servers are not managed by Terraform.
 
 ### Load Balancer
 
-The hcloud load balancer will be used for the K8S API (control-plane).
+The hcloud load balancer will be used for the K8S API (controlplane).
 It will also be used for exposing the applications running within K8S.
 
 ## Updating Terraform Modules
@@ -47,3 +47,5 @@ Afterward, check the changed files back into the GIT repository.
 - The hcloud load balancer can only communicate to the backend servers
   if the servers have a public IPv4
   or they are in the same private network.
+- If container download from gcr.io is blocked with HTTP 403 Forbidden, it means the IP of the server is (temporarily?) blocked.
+  This can be a blocker for the bootstrapping procedure.

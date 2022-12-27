@@ -14,13 +14,6 @@ resource "hcloud_load_balancer_service" "kubernetes" {
   protocol         = "tcp"
 }
 
-resource "hcloud_load_balancer_service" "controlplane" {
-  load_balancer_id = hcloud_load_balancer.controlplane.id
-  listen_port      = "50000"
-  destination_port = "50000"
-  protocol         = "tcp"
-}
-
 resource "hcloud_load_balancer_target" "controlplane" {
   load_balancer_id = hcloud_load_balancer.controlplane.id
   type             = "label_selector"

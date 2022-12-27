@@ -94,5 +94,4 @@ resource "hcloud_firewall" "controlplane" {
 resource "hcloud_firewall_attachment" "controlplane" {
   firewall_id     = hcloud_firewall.controlplane.id
   label_selectors = ["type=controlplane"]
-  depends_on      = [talos_machine_configuration_apply.controlplane]
 }
