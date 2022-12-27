@@ -65,7 +65,8 @@ resource "hcloud_firewall" "controlplane" {
     port        = "50000-50001"
     source_ips = sort(concat(
       [format("%s/32", hcloud_server.jump.ipv4_address)],
-      [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)]
+      [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)],
+      [for s in hcloud_server.worker : format("%s/32", s.ipv4_address)]
     ))
   }
   rule {

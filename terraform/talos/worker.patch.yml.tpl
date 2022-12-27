@@ -1,7 +1,6 @@
 machine:
   install:
-    diskSelector:
-      size: "<= 10GB"
+    disk: "/dev/sdb"
   network:
     interfaces:
       - interface: eth0
@@ -21,3 +20,15 @@ machine:
       keys:
         - nodeID: {}
           slot: 0
+
+cluster:
+  discovery:
+    enabled: true
+    registries:
+      kubernetes:
+        disabled: false
+      # deactivate call-home function
+      service:
+        disabled: true
+  network:
+    dnsDomain: ${dnsdomain}
