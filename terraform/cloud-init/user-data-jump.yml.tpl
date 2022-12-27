@@ -15,13 +15,13 @@ write_files:
     content: "${ansible_private_key}"
     owner: "ansible:ansible"
     permissions: "0400"
-    defer: true
+    defer: false
   - path: "/home/ansible/.talos/config"
     encoding: base64
     content: "${talosconfig}"
     owner: "ansible:ansible"
     permissions: "0400"
-    defer: true
+    defer: false
 packages:
   - ansible-core
   - bzip2
