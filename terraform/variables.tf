@@ -53,7 +53,7 @@ variable "talos_cluster_name" {
 }
 
 variable "k8s_node_placement_group_count" {
-  default     = 1
+  default     = 2
   description = "Defines the number of placement groups to create for k8s nodes."
 }
 

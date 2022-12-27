@@ -1,11 +1,11 @@
 ##
-# Talos Controlplane Nodes
+# Talos worker Nodes
 
-resource "hcloud_server" "controlplane" {
+resource "hcloud_server" "worker" {
   for_each = {
     for k in keys(var.k8s_nodes) :
     k => var.k8s_nodes[k]
-    if lookup(var.k8s_nodes[k], "node_type", "other") == "controlplane"
+    if lookup(var.k8s_nodes[k], "node_type", "other") == "worker"
   }
   name               = each.value.name
   backups            = false
@@ -15,7 +15,7 @@ resource "hcloud_server" "controlplane" {
   server_type        = each.value.server_type
   placement_group_id = hcloud_placement_group.k8s-nodes-spread[each.value.pgroup].id
   labels = {
-    "type" = "controlplane"
+    "type" = "worker"
   }
   public_net {
     ipv4_enabled = true
@@ -24,8 +24,8 @@ resource "hcloud_server" "controlplane" {
 }
 
 # All traffic toward internet is permitted.
-resource "hcloud_firewall" "controlplane" {
-  name = "controlplane"
+resource "hcloud_firewall" "worker" {
+  name = "worker"
   rule {
     description = "Allow inbound ICMP"
     direction   = "in"
@@ -34,16 +34,6 @@ resource "hcloud_firewall" "controlplane" {
       "0.0.0.0/0",
       "::/0"
     ]
-  }
-  rule {
-    description = "Allow inbound private HTTPS traffic"
-    direction   = "in"
-    protocol    = "tcp"
-    port        = "443"
-    source_ips = concat(
-      [format("%s/32", hcloud_server.jump.ipv4_address)],
-      [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)]
-    )
   }
   rule {
     description = "Allow inbound private Kubernetes API traffic"
@@ -62,18 +52,11 @@ resource "hcloud_firewall" "controlplane" {
     description = "Allow inbound private Talos traffic"
     direction   = "in"
     protocol    = "tcp"
-    port        = "50000-50001"
+    port        = "50000"
     source_ips = concat(
       [format("%s/32", hcloud_server.jump.ipv4_address)],
       [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)]
     )
-  }
-  rule {
-    description = "Allow inbound private Kubernetes traffic (etcd server client API)"
-    direction   = "in"
-    protocol    = "tcp"
-    port        = "2379-2380"
-    source_ips  = [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)]
   }
   rule {
     description = "Allow inbound private Kubernetes traffic (Kubelet API)"
@@ -83,12 +66,24 @@ resource "hcloud_firewall" "controlplane" {
     source_ips  = [for s in hcloud_server.controlplane : format("%s/32", s.ipv4_address)]
   }
   apply_to {
-    label_selector = "type=controlplane"
+    label_selector = "type=worker"
   }
 }
 
 # Note: if the firewall is configured too early, the config cannot be applied
-resource "hcloud_firewall_attachment" "controlplane" {
-  firewall_id     = hcloud_firewall.controlplane.id
-  label_selectors = ["type=controlplane"]
+resource "hcloud_firewall_attachment" "worker" {
+  firewall_id     = hcloud_firewall.worker.id
+  label_selectors = ["type=worker"]
+}
+
+# worker nodes get an additional hcloud volume
+# it will be used to install Talos
+resource "hcloud_volume" "volumes" {
+  for_each          = hcloud_server.worker
+  name              = "${each.value.name}-os"
+  automount         = false
+  delete_protection = false
+  size              = 10
+  server_id         = each.value.id
+  depends_on        = [hcloud_server.worker]
 }
