@@ -3,6 +3,16 @@ output "jump_server_ipv4" {
   description = "IPv4 address of the jump server"
 }
 
+output "controlplane_ipv4" {
+  value       = hcloud_server.controlplane.*.ipv4_address
+  description = "IPv4 addresses of the controlplane nodes"
+}
+
+output "worker_ipv4" {
+  value       = hcloud_server.worker.*.ipv4_address
+  description = "IPv4 addresses of the worker nodes"
+}
+
 output "ansible_ssh_public_key" {
   value       = tls_private_key.ansible_ssh.public_key_openssh
   description = "Public SSH key for Ansible"

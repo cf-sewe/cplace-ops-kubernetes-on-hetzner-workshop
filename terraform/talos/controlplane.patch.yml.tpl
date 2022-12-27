@@ -2,10 +2,6 @@ machine:
   install:
     disk: /dev/sda
   network:
-    interfaces:
-      - interface: eth0
-        dhcp: true
-        mtu: 9000
     nameservers:
       - 1.1.1.1
       - 1.0.0.1

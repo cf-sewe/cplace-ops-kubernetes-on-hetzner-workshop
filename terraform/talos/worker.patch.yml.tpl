@@ -2,9 +2,6 @@ machine:
   install:
     disk: "/dev/sdb"
   network:
-    interfaces:
-      - interface: eth0
-        mtu: 9000
     nameservers:
       - 1.1.1.1
       - 1.0.0.1

@@ -49,3 +49,5 @@ Afterward, check the changed files back into the GIT repository.
   or they are in the same private network.
 - If container download from gcr.io is blocked with HTTP 403 Forbidden, it means the IP of the server is (temporarily?) blocked.
   This can be a blocker for the bootstrapping procedure.
+- A larger MTU size (jumbo frames) of 9000 instead of the default 1500 would improve network performance and reduce system load.
+  However, Hetzner doesn't seem to support it.
