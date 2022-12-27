@@ -22,6 +22,12 @@ write_files:
     #owner: "ansible:ansible"
     permissions: "0400"
     defer: false
+  - path: "/home/ansible/.talos/secrets.yml"
+    encoding: base64
+    content: "${talossecrets}"
+    #owner: "ansible:ansible"
+    permissions: "0400"
+    defer: false
 packages:
   - ansible-core
   - bzip2

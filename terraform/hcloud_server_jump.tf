@@ -11,6 +11,7 @@ data "template_file" "user-data-jump" {
     ansible_public_key  = tls_private_key.ansible_ssh.public_key_openssh
     ansible_private_key = base64encode(tls_private_key.ansible_ssh.private_key_pem)
     talosconfig         = base64encode(talos_client_configuration.cluster.talos_config)
+    talossecrets        = base64encode(talos_machine_secrets.cluster.machine_secrets)
   }
 }
 

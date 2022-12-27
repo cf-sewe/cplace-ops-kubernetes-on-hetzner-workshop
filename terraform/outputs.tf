@@ -13,6 +13,11 @@ output "talosconfig" {
   sensitive = true
 }
 
+output "talossecrets" {
+  value     = talos_machine_secrets.cluster.machine_secrets
+  sensitive = true
+}
+
 output "talos_controlplane_config" {
   value     = talos_machine_configuration_controlplane.controlplane.machine_config
   sensitive = true
