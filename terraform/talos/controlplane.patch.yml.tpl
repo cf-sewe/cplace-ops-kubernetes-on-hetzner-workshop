@@ -35,4 +35,8 @@ cluster:
       service:
         disabled: true
   network:
+    cni:
+      name: none
     dnsDomain: ${dnsdomain}
+  proxy:
+    disabled: true

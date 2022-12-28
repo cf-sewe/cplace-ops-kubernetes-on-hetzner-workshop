@@ -36,6 +36,7 @@ packages:
   - jq
   - mc
   - python3-dns
+  - tar
   - unzip
   - zip
 package_upgrade: true

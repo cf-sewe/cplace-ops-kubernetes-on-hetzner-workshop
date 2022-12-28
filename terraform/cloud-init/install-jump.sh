@@ -16,6 +16,16 @@ echo ">>> Installing packer"
 dnf config-manager --add-repo "https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
 dnf install -y packer
 
+echo ">>> Installing helm"
+curl -fsSL "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3" | bash
+helm repo add cilium https://helm.cilium.io/
+
+echo ">>> Installing cilium cli"
+v=$(curl -Ls https://raw.githubusercontent.com/cilium/cilium-cli/master/stable.txt)
+curl -fsSL --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${v}/cilium-linux-amd64.tar.gz
+tar -C /usr/local/bin -xzf cilium-linux-amd64.tar.gz
+rm cilium-linux-amd64.tar.gz
+
 echo ">>> Final steps"
 /usr/bin/sudo -nu ansible tee /home/ansible/.ssh/known_hosts <<EOT
 # github.com:22 SSH-2.0-babeld-8eb00d7e

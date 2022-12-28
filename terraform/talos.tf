@@ -3,6 +3,7 @@ resource "talos_machine_secrets" "cluster" {}
 resource "talos_client_configuration" "cluster" {
   cluster_name    = var.talos_cluster_name
   endpoints       = [for s in hcloud_server.controlplane : s.ipv4_address]
+  nodes           = [for s in hcloud_server.controlplane : s.ipv4_address]
   machine_secrets = talos_machine_secrets.cluster.machine_secrets
 }
 
