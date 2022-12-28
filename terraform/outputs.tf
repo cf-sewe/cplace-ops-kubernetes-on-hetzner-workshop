@@ -3,6 +3,11 @@ output "jump_server_ipv4" {
   description = "IPv4 address of the jump server"
 }
 
+output "loadbalancer_ipv4" {
+  value       = hcloud_load_balancer.controlplane.ipv4
+  description = "IPv4 address of the hcloud Loadbalancer"
+}
+
 output "controlplane_ipv4" {
   value       = [for s in hcloud_server.controlplane : s.ipv4_address]
   description = "IPv4 addresses of the controlplane nodes"
