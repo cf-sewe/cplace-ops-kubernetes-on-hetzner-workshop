@@ -52,12 +52,19 @@ variable "talos_cluster_name" {
   description = "Talos Cluster Name"
 }
 
-variable "k8s_node_placement_group_count" {
+variable "talos_node_placement_group_count" {
+  type        = number
   default     = 2
   description = "Defines the number of placement groups to create for k8s nodes."
 }
 
-variable "k8s_nodes" {
+variable "talos_worker_volume_size" {
+  type        = number
+  default     = 20
+  description = "Defines the size of the hcloud volume used for data storage."
+}
+
+variable "talos_nodes" {
   description = "hcloud servers used for k8s control and worker nodes"
   type = map(object({
     name        = string

@@ -3,9 +3,9 @@
 
 resource "hcloud_server" "worker" {
   for_each = {
-    for k in keys(var.k8s_nodes) :
-    k => var.k8s_nodes[k]
-    if lookup(var.k8s_nodes[k], "node_type", "other") == "worker"
+    for k in keys(var.talos_nodes) :
+    k => var.talos_nodes[k]
+    if lookup(var.talos_nodes[k], "node_type", "other") == "worker"
   }
   name               = each.value.name
   backups            = false
@@ -74,7 +74,7 @@ resource "hcloud_volume" "volumes" {
   name              = "${each.value.name}-os"
   automount         = false
   delete_protection = false
-  size              = 10
+  size              = talos_worker_volume_size
   server_id         = each.value.id
   depends_on        = [hcloud_server.worker]
 }

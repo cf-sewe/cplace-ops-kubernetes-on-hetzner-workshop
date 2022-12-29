@@ -3,9 +3,9 @@
 
 resource "hcloud_server" "controlplane" {
   for_each = {
-    for k in keys(var.k8s_nodes) :
-    k => var.k8s_nodes[k]
-    if lookup(var.k8s_nodes[k], "node_type", "other") == "controlplane"
+    for k in keys(var.talos_nodes) :
+    k => var.talos_nodes[k]
+    if lookup(var.talos_nodes[k], "node_type", "other") == "controlplane"
   }
   name               = each.value.name
   backups            = false

@@ -11,7 +11,7 @@ data "hcloud_image" "talos" {
 }
 
 resource "hcloud_placement_group" "k8s-nodes-spread" {
-  count = var.k8s_node_placement_group_count
+  count = var.talos_node_placement_group_count
   name  = "k8s-nodes-spread-${count.index}"
   type  = "spread"
 }
