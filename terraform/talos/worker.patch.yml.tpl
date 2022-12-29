@@ -1,6 +1,6 @@
 machine:
   install:
-    disk: "/dev/sdb"
+    disk: "/dev/sda"
   network:
     nameservers:
       - 1.1.1.1
