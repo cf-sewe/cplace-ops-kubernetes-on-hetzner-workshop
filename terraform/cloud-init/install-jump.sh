@@ -5,12 +5,13 @@ echo ">>> Installing kubectl"
 v=$(curl -Ls https://dl.k8s.io/release/stable.txt)
 curl -sLo /usr/local/bin/kubectl "https://dl.k8s.io/release/${v}/bin/linux/amd64/kubectl"
 chmod 755 /usr/local/bin/kubectl
-echo 'source <(kubectl completion bash)' >>~/.bashrc
+echo 'source <(/usr/local/bin/kubectl completion bash)' | sudo -nu ansible tee -a ~/.bashrc
 
 echo ">>> Installing talosctl"
 v=$(curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | jq -r '.tag_name')
 curl -sLo /usr/local/bin/talosctl "https://github.com/siderolabs/talos/releases/download/${v}/talosctl-linux-amd64"
 chmod 755 /usr/local/bin/talosctl
+echo 'source <(/usr/local/bin/talosctl completion bash)' | sudo -nu ansible tee -a ~/.bashrc
 
 echo ">>> Installing packer"
 dnf config-manager --add-repo "https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo"
@@ -18,13 +19,14 @@ dnf install -y packer
 
 echo ">>> Installing helm"
 curl -fsSL "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3" | bash
-helm repo add cilium https://helm.cilium.io/
+sudo -nu ansible /usr/local/bin/helm repo add cilium https://helm.cilium.io/
 
 echo ">>> Installing cilium cli"
 v=$(curl -Ls https://raw.githubusercontent.com/cilium/cilium-cli/master/stable.txt)
 curl -fsSL --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${v}/cilium-linux-amd64.tar.gz
 tar -C /usr/local/bin -xzf cilium-linux-amd64.tar.gz
 rm cilium-linux-amd64.tar.gz
+echo 'source <(/usr/local/bin/cilium completion bash)' | sudo -nu ansible tee -a ~/.bashrc
 
 echo ">>> Final steps"
 /usr/bin/sudo -nu ansible tee /home/ansible/.ssh/known_hosts <<EOT

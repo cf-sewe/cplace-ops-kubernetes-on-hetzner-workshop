@@ -14,5 +14,10 @@
       "source.formatAll.terraform": true
     },
   },
-  "terraform.experimentalFeatures.validateOnSave": true
+  "terraform.experimentalFeatures.validateOnSave": true,
+  "cSpell.words": [
+    "Hetzner",
+    "cplace",
+    "hcloud"
+  ]
 }
