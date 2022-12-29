@@ -74,7 +74,7 @@ resource "hcloud_volume" "volumes" {
   name              = "${each.value.name}-os"
   automount         = false
   delete_protection = false
-  size              = talos_worker_volume_size
+  size              = var.talos_worker_volume_size
   server_id         = each.value.id
   depends_on        = [hcloud_server.worker]
 }
