@@ -42,12 +42,19 @@ terraform init -upgrade
 
 Afterward, check the changed files back into the GIT repository.
 
-## Findings
+## Findings & TODO's
 
-- The hcloud load balancer can only communicate to the backend servers
-  if the servers have a public IPv4
+- The hcloud load balancer can only communicate to the backend servers if the servers have a public IPv4 address.
   or they are in the same private network.
-- If container download from gcr.io is blocked with HTTP 403 Forbidden, it means the IP of the server is (temporarily?) blocked.
-  This can be a blocker for the bootstrapping procedure.
+  The original idea was to use IPv6-only nodes.
+  This would save some money and also brings a potential performance gain.
 - A larger MTU size (jumbo frames) of 9000 instead of the default 1500 would improve network performance and reduce system load.
   However, Hetzner doesn't seem to support it.
+- If container download from gcr.io is blocked with HTTP 403 Forbidden, it means the IP of the server is (temporarily?) blocked.
+  This can be a blocker for the bootstrapping procedure.
+
+## Changes for Dedicated Servers
+
+- For hcloud servers we are using a volume for the data.
+  This is very slow, therefore we use the 2xNVMe for data with dedicated servers.
+  The OS will be installed on an *additionally ordered* small SSD.

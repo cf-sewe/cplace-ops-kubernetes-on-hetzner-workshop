@@ -5,7 +5,7 @@ We are conducting a workshop setting up cplace on a Kubernetes cluster running i
 The goals are:
 
 1. Building up Kubernetes cluster architecture and operation know-how within the cplace Operations Team.
-2. Building a PoC for running Kubernetes on the Hetzner Cloud, serving as a foundation for our roadmap initiatives for 2023.
+2. Building a PoC for running Kubernetes on the Hetzner Cloud, serving as a foundation for our road-map initiatives for 2023.
 3. Running cplace on Kubernetes without the abstractions of the cplace Operator.
 
 ## Workshop Contents
@@ -20,8 +20,7 @@ We will deploy Kubernetes on Hetzner using the following technologies:
   - Storage
 - [Talos OS](https://www.talos.dev/latest/introduction/what-is-talos/)
 - [Cilium](https://docs.cilium.io/en/stable/intro/) (CNI)
-- [Rook/Ceph](https://rook.io/docs/rook/latest/Getting-Started/intro/) (CSI)
-- [OpenEBS Mayastor](https://mayastor.gitbook.io/introduction/) (CAS/CSI)
+- [Piraeus](https://piraeus.io/site/docs/intro/)/[Linstor/DRBD](https://linbit.com/linstor/) (CSI)
 
 ### MySQL
 
@@ -58,3 +57,10 @@ CSI Container Storage Interface
 CAS Container Attached Storage
 K8S Kubernetes (K with 8 more letters and an S)
 hcloud Hetzner Cloud
+kubectl The kubernetes CLI tool
+
+
+## Useful Links
+
+- Storage performance benchmarks: https://blog.palark.com/kubernetes-storage-performance-linstor-ceph-mayastor-vitastor/
+- 
