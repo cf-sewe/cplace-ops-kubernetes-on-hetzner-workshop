@@ -1,0 +1,17 @@
+---
+# hubble.yaml
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: hubble
+  namespace: kube-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`hubble.training.cplace.cloud`)
+      kind: Rule
+      services:
+        - kind: Service
+          name: hubble-ui
+          port: 80

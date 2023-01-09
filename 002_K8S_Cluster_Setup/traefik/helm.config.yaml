@@ -1,0 +1,40 @@
+---
+# https://github.com/traefik/traefik-helm-chart/blob/master/traefik/values.yaml
+
+deployment:
+  kind: DaemonSet
+
+ingressRoute:
+  dashboard:
+    enabled: false
+
+ports:
+  web:
+    #asDefault: false
+    expose: false
+    redirectTo: websecure
+  websecure:
+    #asDefault: true
+    hostPort: 443
+    expose: true
+    tls:
+      enabled: true
+    # TODO only trust load-balancer IPs
+    forwardedHeaders:
+      insecure: true
+    proxyProtocol:
+      insecure: true
+
+globalArguments:
+  - "--global.checknewversion"
+
+service:
+  enabled: false
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "50Mi"
+  limits:
+    cpu: "500m"
+    memory: "250Mi"

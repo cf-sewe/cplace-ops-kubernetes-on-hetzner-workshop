@@ -56,6 +56,13 @@ resource "hcloud_firewall" "worker" {
       [for s in hcloud_server.worker : format("%s/32", s.ipv4_address)]
     ))
   }
+  rule {
+    description = "Allow inbound HTTPS traffic (restrict to Cloudflare)"
+    direction   = "in"
+    protocol    = "tcp"
+    port        = "443"
+    source_ips  = "any"
+  }
   apply_to {
     label_selector = "type=worker"
   }
@@ -71,7 +78,7 @@ resource "hcloud_firewall_attachment" "worker" {
 # it will be used to install Talos
 resource "hcloud_volume" "volumes" {
   for_each          = hcloud_server.worker
-  name              = "${each.value.name}-os"
+  name              = "${each.value.name}-data"
   automount         = false
   delete_protection = false
   size              = var.talos_worker_volume_size

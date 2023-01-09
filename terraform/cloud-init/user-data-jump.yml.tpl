@@ -30,6 +30,8 @@ write_files:
     defer: false
 packages:
   - ansible-core
+  - bash-completion
+  - bind-utils
   - bzip2
   - curl
   - git-core

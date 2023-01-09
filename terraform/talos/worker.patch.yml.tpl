@@ -1,6 +1,8 @@
 machine:
   install:
     disk: "/dev/sda"
+    extensions:
+      - image: ghcr.io/siderolabs/drbd:9.2.0-v1.3.0
   network:
     nameservers:
       - 1.1.1.1
@@ -17,6 +19,21 @@ machine:
       keys:
         - nodeID: {}
           slot: 0
+  kubelet:
+    extraArgs:
+      node-labels: "openebs.io/engine=mayastor"
+
+  kernel:
+    modules:
+      - name: drbd
+      - name: drbd_transport_tcp
+
+# Traefik
+# https://github.com/lucas-clemente/quic-go/wiki/UDP-Receive-Buffer-Size
+# https://www.talos.dev/v1.3/kubernetes-guides/configuration/storage/#prep-nodes
+sysctls:
+  net.core.rmem_max: "2500000"
+  vm.nr_hugepages": "1024"
 
 cluster:
   discovery:

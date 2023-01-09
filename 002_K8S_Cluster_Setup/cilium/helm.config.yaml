@@ -1,0 +1,47 @@
+---
+# https://docs.cilium.io/en/stable/helm-reference/
+# https://github.com/cilium/cilium/blob/v1.12.5/install/kubernetes/cilium/values.yaml
+
+cluster:
+  name: default
+
+#k8sServiceHost:
+k8sServicePort: 6443
+
+resources:
+  limits:
+    cpu: 4000m
+    memory: 4Gi
+  requests:
+    cpu: 100m
+    memory: 512Mi
+
+securityContext:
+  privileged: true
+
+bandwidthManager:
+  enabled: true
+  # TODO: enable when kernel >=5.18
+  #bbr: true
+
+externalIPs:
+  enabled: false
+
+socketLB:
+  enabled: false
+
+hubble:
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+    ingress:
+      enabled: false
+
+ipam:
+  mode: "kubernetes"
+
+ipv6:
+  enabled: false
+
+kubeProxyReplacement: "strict"
