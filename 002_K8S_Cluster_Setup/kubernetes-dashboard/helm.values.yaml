@@ -1,0 +1,15 @@
+---
+protocolHttp: true
+service:
+  externalPort: 80
+rbac:
+  clusterReadOnlyRole: true
+  clusterReadOnlyRoleAdditionalRules:
+    - apiGroups:
+        - apiextensions.k8s.io
+      resources:
+        - customresourcedefinitions
+      verbs:
+        - get
+        - list
+        - watch

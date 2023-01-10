@@ -9,12 +9,9 @@ In this session we deploy the Kubernetes cluster:
   - [Deploying Traefik Reverse Proxy](#deploying-traefik-reverse-proxy)
     - [Create Traefik Default Certificate](#create-traefik-default-certificate)
     - [Exposing Hubble UI](#exposing-hubble-ui)
+    - [Install and Expose Kubernetes Dashboard](#install-and-expose-kubernetes-dashboard)
   - [Cloudflare Load Balancer \& WAF](#cloudflare-load-balancer--waf)
-  - [Persistent Storage](#persistent-storage)
-    - [TopolVM Local Storage](#topolvm-local-storage)
-    - [Setting up the Mayastor Storage](#setting-up-the-mayastor-storage)
-    - [Setting up the DRBD/Piraeus Storage](#setting-up-the-drbdpiraeus-storage)
-    - [Deploying Pomerium Authentication Proxy](#deploying-pomerium-authentication-proxy)
+  - [Deploying Pomerium Authentication Proxy](#deploying-pomerium-authentication-proxy)
   - [Deploying Portainer](#deploying-portainer)
   - [Troubleshooting Commands](#troubleshooting-commands)
     - [Talos](#talos)
@@ -37,83 +34,83 @@ IFS=','
 
 ## Talos Cluster Bootstrap Procedure
 
-1. Login to jump server as user `ansible` and switch to the checked out GIT repository.
-2. Create configs for the controlplane and worker nodes:
+1. Login to the jump server as user `ansible`, then change to the checked-out GIT repository.
+2. Create configs for the control plane and worker nodes:
 
-```bash
-# controlplane config
-talosctl gen config \
---with-secrets ~/.talos/secrets.yaml ${CLUSTER} https://${LBIP}:6443 -t controlplane \
---with-docs=false --with-examples=false --config-patch-control-plane @controlplane.patch.yaml
-# worker config
-talosctl gen config \
---with-secrets ~/.talos/secrets.yaml ${CLUSTER} https://${LBIP}:6443 -t worker \
---with-docs=false --with-examples=false --config-patch-worker @worker.patch.yaml
-```
+    ```bash
+    # controlplane config
+    talosctl gen config \
+    --with-secrets ~/.talos/secrets.yaml ${CLUSTER} https://${LBIP}:6443 -t controlplane \
+    --with-docs=false --with-examples=false --config-patch-control-plane @controlplane.patch.yaml
+    # worker config
+    talosctl gen config \
+    --with-secrets ~/.talos/secrets.yaml ${CLUSTER} https://${LBIP}:6443 -t worker \
+    --with-docs=false --with-examples=false --config-patch-worker @worker.patch.yaml
+    ```
 
-Note: The `secret.yaml` has been created by Terraform.
+    Note that the `secret.yaml` has been created by Terraform.
 
-3. Apply configs to the controlplane nodes:
+3. Apply configs to the control plane nodes:
 
-```bash
-for ip in $CPIPS; do
-echo "Apply config (controlplane): $ip"
-talosctl apply-config --insecure \
-    --nodes ${ip} \
-    --file controlplane.yaml
-done
-```
+    ```bash
+    for ip in $CPIPS; do
+    echo "Apply config (controlplane): $ip"
+    talosctl apply-config --insecure \
+        --nodes ${ip} \
+        --file controlplane.yaml
+    done
+    ```
 
 4. Apply configs to the worker nodes:
 
-```bash
-for ip in $WIPS; do
-echo "Apply config (worker): $ip"
-talosctl apply-config --insecure \
-    --nodes ${ip} \
-    --file worker.yaml
-done
-```
+    ```bash
+    for ip in $WIPS; do
+    echo "Apply config (worker): $ip"
+    talosctl apply-config --insecure \
+        --nodes ${ip} \
+        --file worker.yaml
+    done
+    ```
 
 5. Wait until all nodes are ready, either by using talosctl or the hcloud server console.
 
-```bash
-# all nodes should be 'ready'
-talosctl get configstatus
-# all nodes should be 'booting'
-```
+    ```bash
+    # all nodes should be 'ready'
+    talosctl get configstatus
+    # all nodes should be 'booting'
+    ```
 
-If a node config was not applied, the above commands might respond
-with `authentication handshake failed: x509: certificate signed by unknown authority`.
-Timeouts or "no such host" messages indicate invalid IPs.
+    If a node config was not applied, the above commands might respond
+    with `authentication handshake failed: x509: certificate signed by unknown authority`.
+    Timeouts or "no such host" messages indicate invalid IPs.
 
 6. Bootstrap the cluster using the first controlplane node:
 
-```bash
-talosctl bootstrap -n "${CPIPS%%,*}"
-```
+    ```bash
+    talosctl bootstrap -n "${CPIPS%%,*}"
+    ```
 
 7. Wait until the bootstrap procedure is complete.
    Either by checking the OS console output,
-   or use the `talosctl get machinestatus` command (this time also with worker IPs).
+   or by using the `talosctl get machinestatus` command (this time also with worker IPs).
 
-```console
-[ansible@jump ~]$ talosctl get machinestatus -n "${CPIPS},${WIPS}"
-NODE              NAMESPACE   TYPE            ID        VERSION   STAGE     READY
-159.69.116.222    runtime     MachineStatus   machine   15        booting   true
-138.201.175.139   runtime     MachineStatus   machine   17        booting   true
-188.34.176.193    runtime     MachineStatus   machine   15        booting   true
-162.55.161.245    runtime     MachineStatus   machine   12        booting   true
-167.235.205.180   runtime     MachineStatus   machine   13        booting   true
-```
+    ```console
+    [ansible@jump ~]$ talosctl get machinestatus -n "${CPIPS},${WIPS}"
+    NODE              NAMESPACE   TYPE            ID        VERSION   STAGE     READY
+    159.69.116.222    runtime     MachineStatus   machine   15        booting   true
+    138.201.175.139   runtime     MachineStatus   machine   17        booting   true
+    188.34.176.193    runtime     MachineStatus   machine   15        booting   true
+    162.55.161.245    runtime     MachineStatus   machine   12        booting   true
+    167.235.205.180   runtime     MachineStatus   machine   13        booting   true
+    ```
 
 8. Generate the kubeconfig
 
-The `kubeconfig` file is used by `kubectl` required for managing the K8S cluster.
+    The `kubeconfig` file is used by `kubectl` required for managing the K8S cluster.
 
-```bash
-talosctl kubeconfig -n "${CPIPS%%,*}"
-```
+    ```bash
+    talosctl kubeconfig -n "${CPIPS%%,*}"
+    ```
 
 ## Deploying Cilium CNI
 
@@ -141,7 +138,7 @@ Deploy Cilium via Helm:
 ```bash
 # Ensure that the LBIP variable is set
 helm install cilium cilium/cilium  \
-  --values "002_K8S_Cluster_Setup/cilium/helm.config.yaml" \
+  --values "002_K8S_Cluster_Setup/cilium/helm.values.yaml" \
   --namespace kube-system \
   --set k8sServiceHost="${LBIP}" \
   --set hubble.peerService.clusterDomain="${CLUSTER}.local"
@@ -174,7 +171,7 @@ Install Traefik using Helm into the `kube-system` namespace:
 ```bash
 helm install traefik traefik/traefik \
   --namespace kube-system \
-  --values="002_K8S_Cluster_Setup/traefik/helm.config.yaml"
+  --values="002_K8S_Cluster_Setup/traefik/helm.values.yaml"
 ```
 
 ### Create Traefik Default Certificate
@@ -184,23 +181,52 @@ We configure the default Traefik TLS certificate to match the requirements of Cl
 1. Edit the file `traefik/Secret_traefik-default-cert.yaml` and insert the "origin" certificate provided by Cloudflare.
 2. Apply the `traefik/Secret_traefik-default-cert.yaml` file:
 
-```bash
-kubectl apply -f traefik/Secret_traefik-default-cert.yaml
-```
+    ```bash
+    kubectl apply -f "002_K8S_Cluster_Setup/traefik/Secret_traefik-default-cert.yaml"
+    ```
 
 3. Apply the `TLSStore_default.yaml` file:
 
-```bash
-kubectl apply -f traefik/TLSStore_default.yaml
-```
+    ```bash
+    kubectl apply -f "002_K8S_Cluster_Setup/traefik/TLSStore_default.yaml"
+    ```
 
 ### Exposing Hubble UI
 
-Create an *IngressRoute* for Hubble UI:
+Hubble is an UI for Cilium, and can show information about traffic flows.
+To expose the Hubble UI, create an *IngressRoute*:
 
 ```bash
-kubectl apply -f cilium/IngressRoute_hubble.yaml
+kubectl apply -f "002_K8S_Cluster_Setup/cilium/IngressRoute_hubble.yaml"
 ```
+
+### Install and Expose Kubernetes Dashboard
+
+Add Helm repository:
+
+```bash
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm repo update
+```
+
+Install the dashboard via Helm:
+
+```bash
+helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
+  --create-namespace --namespace kubernetes-dashboard \
+  --values "002_K8S_Cluster_Setup/kubernetes-dashboard/helm.values.yaml"
+```
+
+Add *IngressRoute*:
+
+```bash
+kubectl apply -f "002_K8S_Cluster_Setup/kubernetes-dashboard/IngressRoute_kubernetes_dashboard.yaml"
+```
+
+Notes & TODO:
+
+- We currently expose the dashboard with read-only permissions to the world.
+  It must be secured for production use.
 
 ## Cloudflare Load Balancer & WAF
 
@@ -208,100 +234,15 @@ We are using Cloudflare as a load balancer and WAF for our Kubernetes cluster.
 
 1. The hcloud DNS needs to point to Cloudflare, for example:
 
-```
-*.training.cplace.cloud CNAME star.training.cplace.cloud.cdn.cloudflare.net.
-```
+    ```raw
+    *.training.cplace.cloud CNAME star.training.cplace.cloud.cdn.cloudflare.net.
+    ```
 
 2. Create the Cloudflare load balancer.
    Create service checks pointing to all the worker nodes port 443.
    Use equal load distribution and dynamic routing based on the lowest latency.
 
-## Persistent Storage
-
-While all Kubernetes containers require an ephemeral storage,
-cplace requires a persistent highly available / replicated storage to store tenant data.
-Throughput and latency (IOPS) are not much of a concern for cplace tenant data.
-
-Elasticsearch requires a high IOPS (low latency) storage, that does not have to be replicated.
-
-We will not use [Hetzner Cloud Volumes](https://github.com/hetznercloud/csi-driver).
-While they seem to fulfill reliability requirements their performance is not great.
-Also, the volumes do not work with dedicated servers.
-
-[List of CSI drivers](https://kubernetes-csi.github.io/docs/drivers.html)
-
-### TopolVM Local Storage
-
-> if you look in to TopolVM, you’ll have to set an env var in the `topolvm-lvmd-0` daemonset when running on talos:
-
-```yaml
-lvmd:
-  env:
-    - name: LVM_SYSTEM_DIR
-      value: /tmp
-```
-
-https://kubernetes.io/blog/2019/04/04/kubernetes-1.14-local-persistent-volumes-ga/
-https://github.com/kubernetes-sigs/sig-storage-local-static-provisioner
-
-OpenEBS:
-  https://github.com/openebs/dynamic-localpv-provisioner
-  https://github.com/openebs/lvm-localpv
-  quota works with XFS and EXT4
-  encryption not supported by operator
-
-OpenEBS Local PV LVM ?
-
-### Setting up the Mayastor Storage
-
-Apply machine changes to the controlplane nodes:
-
-```bash
-talosctl patch --mode=no-reboot machineconfig \
-  --patch '[{"op": "add", "path": "/machine/sysctls", "value": {"vm.nr_hugepages": "1024"}}, {"op": "add", "path": "/machine/kubelet/extraArgs", "value": {"node-labels": "openebs.io/engine=mayastor"}}]'
-```
-
-### Setting up the DRBD/Piraeus Storage
-
-WORK IN PROGRESS
-
-We will install Piraeus/LINSTOR/DRBD as K8S storage (CSI).
-It has a [very high performance](https://blog.palark.com/kubernetes-storage-performance-linstor-ceph-mayastor-vitastor/), compared with other CSIs like OpenEBS.
-We will just perform a very basic deployment (not production-ready).
-
-Patch the Talos machine config and enable the drbd extension:
-
-```bash
-talosctl patch mc --patch-file drbd/install-drbd-extension.yaml --nodes "$WIPS"
-```
-
-Install the Piraeus operator:
-
-```bash
-git clone https://github.com/piraeusdatastore/piraeus-operator.git
-cd piraeus-operator
-
-# should be removed/replaced with more secure method
-# e.g. dropping pod permissions and applying granular
-kubectl label ns piraeus pod-security.kubernetes.io/enforce=privileged
-kubectl label ns piraeus pod-security.kubernetes.io/auth=privileged
-kubectl label ns piraeus pod-security.kubernetes.io/warn=privileged
-
-helm install piraeus-op ./charts/piraeus \
-  --namespace piraeus \
-  --set operator.satelliteSet.kernelModuleInjectionMode=DepsOnly \
-  --set etcd.enabled=false \
-  --set operator.controller.dbConnectionURL=k8s
-
-# Create device pool on worker-1/2
-# TODO replace with operator provisioning
-# https://github.com/piraeusdatastore/piraeus-operator/blob/master/doc/storage.md#preparing-physical-devices
-kubectl linstor physical-storage create-device-pool \
-  --pool-name nvme_lvm_pool LVM worker-1 /dev/sdb \
-  --storage-pool nvme_pool
-```
-
-### Deploying Pomerium Authentication Proxy
+## Deploying Pomerium Authentication Proxy
 
 To protect certain management UIs, the Pomerium auth proxy will be used.
 

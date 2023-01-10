@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`dashboard.training.cplace.cloud`)
+      services:
+        - kind: Service
+          name: kubernetes-dashboard
+          namespace: kubernetes-dashboard
+          port: 9090
