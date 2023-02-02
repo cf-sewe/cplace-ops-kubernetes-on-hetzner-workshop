@@ -69,8 +69,16 @@ K8S Kubernetes (K with 8 more letters and an S)
 hcloud Hetzner Cloud
 kubectl The kubernetes CLI tool
 
+## Internal Links
 
-## Useful Links
+| Link                                               | Description                     |
+| -------------------------------------------------- | ------------------------------- |
+| https://traefik.training.cplace.cloud/dashboard/   | Traefik reverse proxy dashboard |
+| https://hubble.training.cplace.cloud/dashboard/    | Cilium Hubble dashboard         |
+| https://dashboard.training.cplace.cloud/dashboard/ | Kubernetes Dashboard            |
 
-- Storage performance benchmarks: https://blog.palark.com/kubernetes-storage-performance-linstor-ceph-mayastor-vitastor/
-- 
+## Useful External Links
+
+- [Comparing Ceph, LINSTOR, Mayastor, and Vitastor storage performance in Kubernetes](https://blog.palark.com/kubernetes-storage-performance-linstor-ceph-mayastor-vitastor/)
+- [Nginx vs Traefik: how slower one can be better?](https://devforth.io/blog/nginx-vs-traefik-how-slower-one-can-be-better/)
+- [Why Use LocalPV with NVMe for Your Workload?](https://dzone.com/articles/why-use-localpv-with-nvme-for-your-workload)

@@ -1,0 +1,77 @@
+---
+# Values for the OpenEBS helm chart
+---
+apiserver:
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    #requests:
+    #  cpu: 500m
+    #  memory: 1Gi
+
+defaultStorageConfig:
+  enabled: "true"
+
+varDirectoryPath:
+  baseDir: "/var/openebs"
+
+provisioner:
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    #requests:
+    #  cpu: 500m
+    #  memory: 1Gi
+
+localprovisioner:
+  basePath: "/var/openebs/local"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    #requests:
+    #  cpu: 500m
+    #  memory: 1Gi
+
+  deviceClass:
+    enabled: false
+
+  hostpathClass:
+    enabled: true
+    isDefaultClass: false
+    # Quota not possible out of the box with Talos, prerequisite not met
+    # https://github.com/openebs/dynamic-localpv-provisioner/blob/develop/docs/tutorials/hostpath/xfs_quota/enable-xfs-quota.md?plain=1
+    xfsQuota:
+      enabled: false
+
+snapshotOperator:
+  enabled: false
+
+ndm:
+  enabled: false
+
+ndmOperator:
+  enabled: false
+
+ndmExporter:
+  enabled: false
+
+webhook:
+  enabled: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    #requests:
+    #  cpu: 250m
+    #  memory: 500Mi
+
+analytics:
+  enabled: false
+
+localpv-provisioner:
+  enabled: false
+  openebsNDM:
+    enabled: false

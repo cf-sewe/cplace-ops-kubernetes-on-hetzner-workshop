@@ -20,9 +20,17 @@ machine:
         - nodeID: {}
           slot: 0
   kubelet:
-    extraArgs:
-      node-labels: "openebs.io/engine=mayastor"
-
+    #extraArgs:
+    #  node-labels: "openebs.io/engine=mayastor"
+    # ensure openebs directory from host is mounted into kubelet
+    extraMounts:
+      - destination: /var/openebs/local
+        type: bind
+        source: /var/openebs/local
+        options:
+          - bind
+          - rshared
+          - rw
   kernel:
     modules:
       - name: drbd

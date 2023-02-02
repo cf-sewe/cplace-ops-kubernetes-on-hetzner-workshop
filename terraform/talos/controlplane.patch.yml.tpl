@@ -40,3 +40,12 @@ cluster:
     dnsDomain: ${dnsdomain}
   proxy:
     disabled: true
+  # TODO: currently many deployments/docs are still not updated for Pod Security Admission
+  #       for training we are enabling the unsecure "privileged" mode (for PROD unacceptable!)
+  #       https://kubernetes.io/docs/concepts/security/pod-security-admission/
+  apiServer:
+    admissionControl:
+      - name: PodSecurity
+        configuration:
+          defaults:
+            enforce: privileged

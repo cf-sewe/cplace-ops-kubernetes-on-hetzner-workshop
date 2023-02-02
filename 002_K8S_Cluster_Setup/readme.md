@@ -148,6 +148,8 @@ Wait a few minutes, then check the cilium status using kubectl and/or the cilium
 
 ```bash
 kubectl get pods -o wide -n kube-system
+
+# Note: cilium cli is installed by Terraform
 cilium status
 ```
 
@@ -193,7 +195,7 @@ We configure the default Traefik TLS certificate to match the requirements of Cl
 
 ### Exposing Hubble UI
 
-Hubble is an UI for Cilium, and can show information about traffic flows.
+Hubble is a UI for Cilium, and can show information about traffic flows.
 To expose the Hubble UI, create an *IngressRoute*:
 
 ```bash
@@ -249,6 +251,26 @@ To protect certain management UIs, the Pomerium auth proxy will be used.
 ## Deploying Portainer
 
 Portainer can be used to manage Kubernetes resources more efficiently.
+
+Add the required Helm repository:
+
+```bash
+helm repo add portainer https://portainer.github.io/k8s/
+helm repo update
+```
+
+Install Portainer:
+
+```bash
+helm install portainer portainer/portainer \
+  --create-namespace --namespace portainer \
+  --values "002_K8S_Cluster_Setup/portainer/helm.values.yaml"
+```
+
+Create the IngressRoute:
+
+```bash
+```
 
 ## Troubleshooting Commands
 
@@ -320,3 +342,5 @@ kubectl describe pod kube-controller-manager-control-1 -n kube-system
   We use the default certificate (self-signed) for now.
 - The hcloud load balancer does not support UDP.
   UDP is a requirement for HTTP3, however, this is not so critical because we can use Cloudflare.
+- We have weakened the default Pod Security Admission to `restricted`.
+  Must be changed for Prod! See [here](https://kubernetes.io/docs/concepts/security/pod-security-admission/).
